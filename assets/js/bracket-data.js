@@ -118,6 +118,14 @@ const BRACKET_DATA = {
             winner: null
         }
     ],
+    thirdPlace: [
+        {
+            id: "tp_1",
+            team1: null,
+            team2: null,
+            winner: null
+        }
+    ],
     champion: {
         winner: null
     }
@@ -146,6 +154,12 @@ const PROGRESSION = {
     "f_1": { stage: "champion", matchId: null, position: 1 }
 };
 
+// 準決賽的「敗方」進入季軍賽（與 PROGRESSION 的勝方路線並行、互不影響）
+const THIRD_PLACE_PROGRESSION = {
+    "sf_1": { matchId: "tp_1", position: 1 },
+    "sf_2": { matchId: "tp_1", position: 2 }
+};
+
 function findMatchById(matchId) {
     const [stage, num] = matchId.split('_');
     let stageKey;
@@ -154,12 +168,51 @@ function findMatchById(matchId) {
     else if (stage === 'qf') stageKey = 'quarterfinal';
     else if (stage === 'sf') stageKey = 'semiFinal';
     else if (stage === 'f') stageKey = 'final';
+    else if (stage === 'tp') stageKey = 'thirdPlace';
     else return null;
 
     return BRACKET_DATA[stageKey].find(m => m.id === matchId);
 }
 
+// 準決賽產生勝負後，把「敗方」推進季軍賽對應的位置
+function updateThirdPlace(matchId, winnerTeam) {
+    const progression = THIRD_PLACE_PROGRESSION[matchId];
+    if (!progression) return;
+
+    const match = findMatchById(matchId);
+    if (!match || !match.team1 || !match.team2) return;
+
+    const loserTeam = match.team1.name === winnerTeam.name ? match.team2 : match.team1;
+
+    const tpMatch = findMatchById(progression.matchId);
+    if (!tpMatch) return;
+
+    const key = progression.position === 1 ? 'team1' : 'team2';
+    const previousTeam = tpMatch[key];
+    tpMatch[key] = loserTeam;
+
+    const teamChanged = !previousTeam || previousTeam.name !== loserTeam.name;
+    if (teamChanged && tpMatch.winner) {
+        tpMatch.winner = null;
+    }
+}
+
+// 準決賽的預測被取消/改變時，清除季軍賽中對應的敗方隊伍與已選結果
+function clearThirdPlace(matchId) {
+    const progression = THIRD_PLACE_PROGRESSION[matchId];
+    if (!progression) return;
+
+    const tpMatch = findMatchById(progression.matchId);
+    if (!tpMatch) return;
+
+    const key = progression.position === 1 ? 'team1' : 'team2';
+    tpMatch[key] = null;
+    tpMatch.winner = null;
+}
+
 function updateNextRound(matchId, winnerTeam) {
+    updateThirdPlace(matchId, winnerTeam);
+
     const progression = PROGRESSION[matchId];
     if (!progression) return;
 
@@ -186,6 +239,8 @@ function updateNextRound(matchId, winnerTeam) {
 
 // 清除某場比賽的結果對「後續比賽」造成的影響（遞迴清到冠軍為止）
 function clearDownstream(matchId) {
+    clearThirdPlace(matchId);
+
     const progression = PROGRESSION[matchId];
     if (!progression) return;
 

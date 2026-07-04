@@ -16,6 +16,8 @@
     --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     --connector-color: #cbd5e1;
     --connector-gap: 50px;
+    --col-width: 220px;
+    --bracket-pad: 20px;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -102,7 +104,7 @@ html, body {
     align-items: stretch;
     gap: var(--connector-gap);
     overflow-x: auto;
-    padding: 20px;
+    padding: var(--bracket-pad);
     background-color: var(--bg-color);
     border-radius: 12px;
     box-shadow: var(--card-shadow);
@@ -111,7 +113,7 @@ html, body {
 
 .bracket-column {
     flex-shrink: 0;
-    width: 220px;
+    width: var(--col-width);
     display: flex;
     flex-direction: column;
 }
@@ -295,6 +297,32 @@ html, body {
     border-radius: 6px;
 }
 
+/* 決賽欄位只有 1 場比賽，卡片靠 justify-content:center 垂直置中在
+   整欄高度（與 round16 等高）中央，下方留有大片空白——用 position:absolute
+   把季軍賽疊在那塊空白裡，不佔用 .matches-column 的 flex:1 版面，
+   才不會壓縮決賽卡片高度而讓 final-connector 連接線對不準準決賽中點 */
+.final-column {
+    position: relative;
+}
+
+.third-place-section {
+    position: absolute;
+    top: 60%;
+    left: 0;
+    right: 0;
+    padding: 16px;
+    background-color: var(--bg-color);
+    border-radius: 12px;
+    box-shadow: var(--card-shadow);
+}
+
+.third-place-section h2 {
+    font-size: 18px;
+    margin-bottom: 16px;
+    text-align: center;
+    color: var(--text-primary);
+}
+
 /* Champion Display */
 .champion {
     display: flex;
@@ -464,20 +492,19 @@ html, body {
 @media (max-width: 1024px) {
     :root {
         --connector-gap: 30px;
+        --col-width: 170px;
     }
 
     .bracket-container {
         min-width: 100%;
-    }
-
-    .bracket-column {
-        width: 170px;
     }
 }
 
 @media (max-width: 768px) {
     :root {
         --connector-gap: 20px;
+        --col-width: 140px;
+        --bracket-pad: 15px;
     }
 
     .header {
@@ -487,14 +514,6 @@ html, body {
 
     .header h1 {
         font-size: 22px;
-    }
-
-    .bracket-container {
-        padding: 15px;
-    }
-
-    .bracket-column {
-        width: 140px;
     }
 
     .bracket-column h2 {

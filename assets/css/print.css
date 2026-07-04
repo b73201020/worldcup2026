@@ -121,6 +121,22 @@
         border-color: #999;
     }
 
+    /* 疊在決賽欄位空白處的季軍賽卡片縮小尺寸，決賽欄位變窄後改用
+       shrink-to-fit 置中（position 仍沿用螢幕版的 absolute + top:60%） */
+    .third-place-section {
+        box-shadow: none;
+        border-radius: 0;
+        padding: 6px 0 0 0;
+        margin: 8px auto 0;
+        width: auto;
+        max-width: 140px;
+    }
+
+    .third-place-section h2 {
+        font-size: 10px;
+        margin-bottom: 6px;
+    }
+
     .champion-display {
         box-shadow: none;
         min-height: 0;

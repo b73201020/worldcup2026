@@ -23,6 +23,7 @@ function renderBracket() {
     renderQuarterfinal();
     renderSemiFinal();
     renderFinal();
+    renderThirdPlace();
     renderChampion();
 }
 
@@ -58,6 +59,15 @@ function renderFinal() {
     container.innerHTML = '';
 
     BRACKET_DATA.final.forEach(match => {
+        container.appendChild(createMatchSlot(match));
+    });
+}
+
+function renderThirdPlace() {
+    const container = document.getElementById('thirdPlace');
+    container.innerHTML = '';
+
+    BRACKET_DATA.thirdPlace.forEach(match => {
         container.appendChild(createMatchSlot(match));
     });
 }

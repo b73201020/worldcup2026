@@ -36,6 +36,11 @@ class BracketStorage {
             m.team2 = null;
             m.winner = null;
         });
+        BRACKET_DATA.thirdPlace.forEach(m => {
+            m.team1 = null;
+            m.team2 = null;
+            m.winner = null;
+        });
         BRACKET_DATA.champion.winner = null;
 
         // 第 2 步：清除 localStorage
