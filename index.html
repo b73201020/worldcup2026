@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026 世界盃預測</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="assets/css/print.css" media="print">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>⚽ 2026 FIFA 世界盃預測</h1>
+            <div class="header-actions">
+                <button id="printBtn" class="btn btn-secondary">🖨️ 列印</button>
+                <button id="saveBtn" class="btn btn-secondary">💾 保存</button>
+                <button id="resetBtn" class="btn btn-secondary">🔄 重置</button>
+            </div>
+        </header>
+
+        <!-- Tournament Bracket -->
+        <div class="bracket-container">
+            <div class="bracket-column">
+                <h2>16強賽</h2>
+                <div class="matches-column with-connector" id="round16"></div>
+            </div>
+
+            <div class="bracket-column">
+                <h2>8強賽</h2>
+                <div class="matches-column with-connector" id="quarterfinal"></div>
+            </div>
+
+            <div class="bracket-column">
+                <h2>準決賽</h2>
+                <div class="matches-column with-connector" id="semifinal"></div>
+            </div>
+
+            <div class="bracket-column">
+                <h2>決賽</h2>
+                <div class="matches-column final-connector" id="final"></div>
+            </div>
+
+            <div class="bracket-column champion">
+                <h2>冠軍</h2>
+                <div id="champion" class="champion-display">
+                    <div class="champion-flag"></div>
+                    <div class="champion-name">待定</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Team Selection Modal -->
+    <div id="teamModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>選擇勝者</h2>
+                <button class="modal-close" id="closeModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="team1Option" class="team-option">
+                    <span class="team-flag"></span>
+                    <span class="team-name"></span>
+                </div>
+                <div class="vs-separator">VS</div>
+                <div id="team2Option" class="team-option">
+                    <span class="team-flag"></span>
+                    <span class="team-name"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/js/bracket-data.js"></script>
+    <script src="assets/js/bracket-storage.js"></script>
+    <script src="assets/js/bracket-app.js"></script>
+</body>
+</html>

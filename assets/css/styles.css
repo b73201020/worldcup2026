@@ -1,0 +1,562 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary-color: #2563eb;
+    --primary-dark: #1e40af;
+    --success-color: #16a34a;
+    --bg-color: #ffffff;
+    --bg-secondary: #f8fafc;
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --border-color: #e2e8f0;
+    --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    --connector-color: #cbd5e1;
+    --connector-gap: 50px;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg-color: #1e293b;
+        --bg-secondary: #0f172a;
+        --text-primary: #f1f5f9;
+        --text-secondary: #cbd5e1;
+        --border-color: #334155;
+        --connector-color: #475569;
+    }
+}
+
+html, body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Header */
+.header {
+    background-color: var(--bg-color);
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 30px;
+    box-shadow: var(--card-shadow);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.header h1 {
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.header-actions {
+    display: flex;
+    gap: 10px;
+}
+
+/* Buttons */
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-dark);
+}
+
+.btn-secondary {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+    background-color: var(--border-color);
+}
+
+/* Bracket Container */
+.bracket-container {
+    display: flex;
+    align-items: stretch;
+    gap: var(--connector-gap);
+    overflow-x: auto;
+    padding: 20px;
+    background-color: var(--bg-color);
+    border-radius: 12px;
+    box-shadow: var(--card-shadow);
+    min-height: 600px;
+}
+
+.bracket-column {
+    flex-shrink: 0;
+    width: 220px;
+    display: flex;
+    flex-direction: column;
+}
+
+.bracket-column h2 {
+    font-size: 18px;
+    margin-bottom: 20px;
+    text-align: center;
+    color: var(--text-primary);
+}
+
+/* Matches Column：每輪比賽等高欄位，內部用 flex:1 slot 平均分配高度，
+   使後面輪次的卡片自動垂直置中對齊前一輪的兩場比賽中點，形成樹狀結構 */
+.matches-column {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+/* 每場比賽的「插槽」：flex:1 讓 8強/4強/2強/1強 的高度呈倍數關係 */
+.match-slot {
+    position: relative;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 6px 0;
+    box-sizing: border-box;
+}
+
+/* 連接線（僅 16強/8強/準決賽欄位有輸出連接線） */
+.with-connector .match-slot::before {
+    content: '';
+    position: absolute;
+    right: 0;
+    width: calc(var(--connector-gap) / 2);
+    border-right: 2px solid var(--connector-color);
+}
+
+.with-connector .match-slot:nth-child(odd)::before {
+    top: 50%;
+    height: 50%;
+    border-top: 2px solid var(--connector-color);
+}
+
+.with-connector .match-slot:nth-child(even)::before {
+    top: 0;
+    height: 50%;
+    border-bottom: 2px solid var(--connector-color);
+}
+
+.with-connector .match-slot::after {
+    content: '';
+    position: absolute;
+    right: calc(-1 * var(--connector-gap) / 2);
+    width: calc(var(--connector-gap) / 2);
+    border-top: 2px solid var(--connector-color);
+}
+
+.with-connector .match-slot:nth-child(odd)::after {
+    top: 100%;
+}
+
+.with-connector .match-slot:nth-child(even)::after {
+    top: 0%;
+}
+
+/* 決賽 → 冠軍：單一比賽，只需一條直線 */
+.final-connector .match-slot::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: calc(-1 * var(--connector-gap));
+    width: var(--connector-gap);
+    border-top: 2px solid var(--connector-color);
+}
+
+/* Match Card */
+.match-card {
+    background-color: var(--bg-secondary);
+    border: 2px solid var(--border-color);
+    border-radius: 10px;
+    padding: 15px;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-height: 140px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.match-card:hover:not(.completed) {
+    border-color: var(--primary-color);
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.25);
+    transform: translateY(-2px);
+}
+
+.match-card.completed {
+    opacity: 0.9;
+    cursor: default;
+}
+
+/* 可點擊的隊伍提示 */
+.match-card:not(.completed) .team {
+    cursor: pointer;
+}
+
+.match-card:not(.completed) .team:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.team {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 10px;
+    border-radius: 8px;
+    font-weight: 600;
+    background-color: var(--bg-color);
+    transition: all 0.3s ease;
+    min-height: 50px;
+}
+
+.team:hover {
+    background-color: var(--border-color);
+    transform: translateX(4px);
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.1);
+}
+
+.team:active {
+    transform: translateX(2px);
+}
+
+.match-card.completed .team.winner {
+    background-color: var(--success-color);
+    color: white;
+    font-weight: 700;
+}
+
+.team.placeholder {
+    color: var(--text-secondary);
+    font-style: italic;
+    font-weight: 500;
+    justify-content: center;
+}
+
+.team .flag {
+    flex-shrink: 0;
+    width: 50px;
+    height: 33px;
+    border-radius: 4px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    object-fit: cover;
+}
+
+.match-card.completed .team .flag {
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.team .name {
+    flex-grow: 1;
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 600;
+}
+
+.match-result {
+    text-align: center;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--success-color);
+    font-weight: 700;
+    font-size: 22px;
+    background-color: rgba(22, 163, 74, 0.1);
+    border-radius: 6px;
+}
+
+/* Champion Display */
+.champion {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.champion-display {
+    background-color: var(--bg-secondary);
+    border: 3px solid var(--primary-color);
+    border-radius: 12px;
+    padding: 30px;
+    text-align: center;
+    min-height: 250px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.champion-display .champion-flag {
+    width: 120px;
+    height: 80px;
+    border-radius: 8px;
+    border: 3px solid var(--primary-color);
+    object-fit: cover;
+}
+
+.champion-display .champion-name {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+/* Modal */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal.hidden {
+    display: none;
+}
+
+.modal-content {
+    background-color: var(--bg-color);
+    border-radius: 12px;
+    padding: 30px;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    position: relative;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.modal-header h2 {
+    font-size: 18px;
+    margin: 0;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 28px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.modal-close:hover {
+    color: var(--text-primary);
+}
+
+.modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.team-option {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    border: 2px solid var(--border-color);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background-color: var(--bg-secondary);
+    min-height: 70px;
+}
+
+.team-option:hover {
+    border-color: var(--primary-color);
+    background-color: var(--border-color);
+    transform: translateX(5px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+}
+
+.team-option.selected {
+    border-color: var(--success-color);
+    background-color: var(--success-color);
+    color: white;
+    font-weight: 700;
+}
+
+.team-option .team-flag {
+    flex-shrink: 0;
+    width: 60px;
+    height: 40px;
+    border-radius: 6px;
+    border: 2px solid currentColor;
+    object-fit: cover;
+}
+
+.team-option .team-name {
+    font-weight: 700;
+    font-size: 16px;
+    flex-grow: 1;
+}
+
+.vs-separator {
+    text-align: center;
+    color: var(--text-secondary);
+    font-weight: 700;
+    padding: 10px 0;
+}
+
+/* Notification */
+.notification {
+    position: fixed;
+    bottom: -100px;
+    right: 20px;
+    background-color: var(--success-color);
+    color: white;
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    z-index: 2000;
+    transition: bottom 0.3s ease;
+    font-weight: 600;
+}
+
+.notification.show {
+    bottom: 20px;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    :root {
+        --connector-gap: 30px;
+    }
+
+    .bracket-container {
+        min-width: 100%;
+    }
+
+    .bracket-column {
+        width: 170px;
+    }
+}
+
+@media (max-width: 768px) {
+    :root {
+        --connector-gap: 20px;
+    }
+
+    .header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .header h1 {
+        font-size: 22px;
+    }
+
+    .bracket-container {
+        padding: 15px;
+    }
+
+    .bracket-column {
+        width: 140px;
+    }
+
+    .bracket-column h2 {
+        font-size: 14px;
+        margin-bottom: 15px;
+    }
+
+    .match-card {
+        padding: 10px;
+        gap: 6px;
+    }
+
+    .team {
+        padding: 6px;
+        gap: 6px;
+    }
+
+    .team .flag {
+        font-size: 16px;
+    }
+
+    .team .name {
+        font-size: 12px;
+    }
+
+    .modal-content {
+        padding: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .bracket-column h2 {
+        font-size: 12px;
+    }
+
+    .team .name {
+        font-size: 11px;
+    }
+
+    .champion-display .champion-flag {
+        font-size: 40px;
+    }
+
+    .champion-display .champion-name {
+        font-size: 16px;
+    }
+}
+
+/* Scrollbar */
+.bracket-container::-webkit-scrollbar {
+    height: 6px;
+}
+
+.bracket-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.bracket-container::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 3px;
+}
+
+.bracket-container::-webkit-scrollbar-thumb:hover {
+    background: var(--text-secondary);
+}
